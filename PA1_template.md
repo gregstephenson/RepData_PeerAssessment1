@@ -1,4 +1,5 @@
 # Reproducible Research: Peer Assessment 1
+Greg Stephenson  
 
 
 ## Loading and preprocessing the data
@@ -72,10 +73,10 @@ newAverageStepsPerDay = mean(newTotalDailySteps[,"steps"])
 newMedianStepsPerDay = median(newTotalDailySteps[,"steps"])
 ```
 
-Having replace all NAs in the data with the average number of steps taken in the same time interval, we find that the mean number of steps each day is now 10766.19 and the median has become 10766.19. Tjhese values are extremely close to the original data.
+Having replace all NAs in the data with the average number of steps taken in the same time interval, we find that the mean number of steps each day is now 10766.19 and the median has become 10766.19. Tjhese values are extremely close to the original data. We can also see the frequency of an average day has increased by over 50%, which makes sense given that any days for which there was no data have been filled with averaged data. The days with zero steps (forgoton to wear the fitbit perhaps) have been left at 0.
 
 ## Are there differences in activity patterns between weekdays and weekends?
-
+To determine the answer to this question I have split the data into two frames and repeated the above method for producing an activity pattern chart.
 
 ```r
 days <- factor(weekdays(as.Date(backFilledData$date)))
@@ -91,15 +92,11 @@ WDSPI$continuousTime <- continuousTime[1:nrow(WDSPI)]
 WESPI <- aggregate(. ~WeekEnd.interval, data=WeekEnds, mean, na.rm=TRUE)
 WESPI$continuousTime <- continuousTime[1:nrow(WESPI)]
 
-ggplot(WDSPI, aes(continuousTime, WeekDay.steps)) + geom_line() + xlab("Time Interval (24hr Time)") + ylab("Average Steps") + ggtitle("WeekDay Activity Pattern")
+par(mfrow=c(2,1))
+plot.ts(WDSPI$continuousTime, WDSPI$WeekDay.steps, type="l", main = "Weekday Activity Pattern", xlab = "Time (24h)", ylab = "Mean Steps")
+plot.ts(WESPI$continuousTime, WESPI$WeekEnd.steps, type="l", main = "Weekend Activity Pattern", xlab = "Time (24h)", ylab = "Mean Steps")
 ```
 
 ![](Figs/unnamed-chunk-6-1.png)<!-- -->
-
-```r
-ggplot(WESPI, aes(continuousTime, WeekEnd.steps)) + geom_line() + xlab("Time Interval (24hr Time)") + ylab("Average Steps") + ggtitle("WeekEnd Activity Pattern")
-```
-
-![](Figs/unnamed-chunk-6-2.png)<!-- -->
 
 As we can see from the charts, while the peak value is actually slightly lower, the subject is more consistently average on the weekend. This may indicate employment in a sedentary job.
